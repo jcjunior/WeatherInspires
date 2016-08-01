@@ -1,0 +1,88 @@
+apply plugin: 'com.android.application'
+apply plugin: 'android-apt'
+apply plugin: 'distribution'
+
+distributions {
+    main {
+        baseName = 'WeatherInspires'
+        contents {
+            from rootDir
+            exclude 'app/build'
+            exclude 'build'
+            exclude '.gradle'
+            exclude '.idea'
+            exclude 'gradle'
+        }
+    }
+}
+
+android {
+
+    compileSdkVersion 22
+    buildToolsVersion "23.0.3"
+
+    defaultConfig {
+        applicationId "br.com.josecarlos.weatherinspires"
+        minSdkVersion 14
+        targetSdkVersion 22
+        versionCode 1
+        versionName "1.0"
+    }
+    buildTypes {
+        debug {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            applicationVariants.all { variant ->
+                variant.outputs.each { output ->
+                    def file = output.outputFile
+                    def appId = 'WeatherInspires'
+                    def fileName = appId + "-" + defaultConfig.versionName + ".apk"
+                    output.outputFile = new File(file.parent, fileName)
+                }
+            }
+        }
+    }
+
+    buildTypes.each {
+        it.buildConfigField 'String', 'OPEN_WEATHER_MAP_API_KEY', "\"1d0e19fd6470b7c5b4511d540a6405ad\""
+    }
+
+    lintOptions {
+        abortOnError false
+    }
+
+    testOptions {
+        unitTests.returnDefaultValues = true
+    }
+}
+
+ext {
+    junitVersion = '4.12'
+    mockitoVersion = '1.9.5'
+    retrofitVersion = '2.1.0'
+    androidAnnotationsVersion = '4.0.0'
+    androidSupportVersion = '22.2.1'
+    weatherIconViewVersion = '1.1.0'
+}
+
+dependencies {
+    compile fileTree(dir: 'libs', include: ['*.jar'])
+
+    apt "org.androidannotations:androidannotations:$androidAnnotationsVersion"
+
+    testCompile "junit:junit:$junitVersion"
+    testCompile "org.mockito:mockito-all:$mockitoVersion"
+
+    compile "com.squareup.retrofit2:converter-gson:$retrofitVersion"
+    compile "com.squareup.retrofit2:retrofit:$retrofitVersion"
+    compile "org.androidannotations:androidannotations-api:$androidAnnotationsVersion"
+    compile "com.android.support:appcompat-v7:$androidSupportVersion"
+    compile "com.android.support:design:$androidSupportVersion"
+    compile "com.github.pwittchen:weathericonview:$weatherIconViewVersion"
+}
+
+apt {
+    arguments {
+        androidManifestFile variant.outputs[0]?.processResources?.manifestFile
+    }
+}

@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">Weather Inspires</string>
+    <string name="title_add">Add</string>
+    <string name="title_search">Search</string>
+    <string name="title_refresh">Refresh</string>
+    <string name="title_city_added_success">%1$s city added with success</string>
+    <string name="title_city_removed_success">%1$s city removed with success</string>
+</resources>
